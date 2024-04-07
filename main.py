@@ -7,6 +7,7 @@ import re
 from thefuzz import fuzz
 from flask import Flask,request,jsonify
 from urllib.parse import quote,unquote
+import os
 root = "https://subscene.com"
 headers = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0"
@@ -144,13 +145,13 @@ def dwn_srt(url):
     return  dwn.extractor(decoded_url)
         
 
-if __name__ == '__main__' : 
-    # dwn =DwnloadLink()
-    app.run(debug=True)
-    # dwn.extractor(link).keys()
-    # print(dwn.getPages('https://subscene.com/subtitles/titanic'))
-    # print(dwn.main('tt4154796'))
-    # print(dwn.extractor('https://subscene.com/subtitles/the-lord-of-the-rings/arabic/2403020.srt'))
-        
+if __name__ == '__main__':
+    # Get the host and port from environment variables or use default values
+    host = os.environ.get('HOST', '0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('DEBUG', True)
+
+    # Run the Flask app with dynamically determined host and port
+    app.run(host=host, port=port, debug=debug)
     
 
