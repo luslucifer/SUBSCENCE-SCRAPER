@@ -132,7 +132,7 @@ def movie_subs_list(id):
     arr = dwn.main(id)
     for obj in arr:
         encoded_url = quote(obj['url'], safe='~()*!\'')
-        obj['url'] = f'http://{host}/x/{encoded_url}.srt'
+        obj['url'] = f'https://{host}/x/{encoded_url}.srt'
 
     return jsonify(arr)  # Return JSON response
 
