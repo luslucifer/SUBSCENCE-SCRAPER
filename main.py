@@ -163,8 +163,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def main():
-    host = request.host
-    return host
+    # host = request.
+    with open('index.html','r') as file : 
+        htmlx = file.read()
+    return htmlx
 
 @app.route('/sub/<id>')
 def movie_subs_list(id): 

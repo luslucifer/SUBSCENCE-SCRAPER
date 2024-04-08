@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Subtitles API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            font-size: 1.3em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        p, ul, ol, pre, code {
+            margin-bottom: 15px;
+        }
+
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: Consolas, monospace;
+            background-color: #f9f9f9;
+            padding: 3px 6px;
+            border-radius: 3px;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .endpoint {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .endpoint-example {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Subtitles API Documentation</h1>
+
+        <div class="endpoint">
+            <h2>Overview</h2>
+            <p>The Movie Subtitles API allows users to access and download subtitle files for movies or TV series using either IMDb or TMDb IDs.</p>
+        </div>
+
+        <div class="endpoint">
+            <h2>Endpoints</h2>
+
+            <div class="endpoint">
+                <h3>List Movie or TV Series Subtitles</h3>
+                <p><strong>Endpoint:</strong> <code>GET /sub/&lt;id&gt;</code></p>
+                <p><strong>Parameters:</strong></p>
+                <ul>
+                    <li><code>id</code> (required): The ID of the movie or TV series. This can be either an IMDb ID or a TMDb ID.</li>
+                    <li><code>ss</code> (optional): The season number if the ID corresponds to a TV series.</li>
+                    <li><code>ep</code> (optional): The episode number if the ID corresponds to a TV series.</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <div class="endpoint-example">
+                    <code>GET /sub/tt1234567?ss=1&amp;ep=5</code>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <h3>Download Subtitle</h3>
+                <p><strong>Endpoint:</strong> <code>GET /x/&lt;path:url&gt;</code></p>
+                <p><strong>Parameters:</strong></p>
+                <ul>
+                    <li><code>url</code> (required): The URL-encoded path to the subtitle file.</li>
+                </ul>
+                <p><strong>Example:</strong></p>
+                <div class="endpoint-example">
+                    <code>GET /x/example_url.srt</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="endpoint">
+            <h2>Error Handling</h2>
+            <ul>
+                <li><strong>404 Not Found:</strong> If the requested movie or TV series, or subtitle file is not found.</li>
+                <li><strong>500 Internal Server Error:</strong> If there is an unexpected error while processing the request.</li>
+            </ul>
+        </div>
+
+        <div class="endpoint">
+            <h2>Rate Limiting</h2>
+            <p>There is currently no rate limiting enforced on this API.</p>
+        </div>
+
+        <div class="endpoint">
+            <h2>Authentication</h2>
+            <p>This API does not require authentication.</p>
+        </div>
+
+        <div class="endpoint">
+            <h2>Notes</h2>
+            <ul>
+                <li>Subtitle files are provided in the SubRip (.srt) format.</li>
+                <li>Use appropriate tools to handle subtitle file downloads and processing.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
