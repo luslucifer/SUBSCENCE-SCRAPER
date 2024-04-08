@@ -8,6 +8,7 @@ from thefuzz import fuzz
 from flask import Flask,request,jsonify
 from urllib.parse import quote,unquote
 import os
+import inflect 
 root = "https://subscene.com"
 headers = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0"
@@ -21,7 +22,7 @@ link = 'https://subscene.com/subtitles/arabic-text/P8CLcuLwyZUfcUIfBmr-6QG0VAfMj
 
 # host = request.host
 
-
+inflict1 = inflect.engine()
 class DwnloadLink:
     def search_subtitles(self,q: str):
         r = requests.post(f"{root}/subtitles/searchbytitle", headers=headers, params={"query": q})
@@ -62,31 +63,63 @@ class DwnloadLink:
         # print(time.time()-start_time)
         # return obj 
     
-    def get_page_urls(self,url:str): #https://subscene.com/subtitles/titanic
+    def get_page_urls(self,url:str,ss:str|None = None, ep:str|None =None): #https://subscene.com/subtitles/titanic
         res = requests.get(url,headers=headers)
         arr = []
         # print(res.content)
         if res.status_code == 200: 
             soup = BeautifulSoup(res.content , 'html.parser') 
             a_elements= soup.find_all('a')
-
             for a in a_elements : 
                 obj = {}
                 x = a.find('span',class_='l r positive-icon')
-                if x!= None : 
+                spans = a.find_all('span')
+                if x!= None and len(spans) ==2 and ss==None: 
+                    print(ss)
                     text = x.text 
                     cleaned_string = re.sub(r"[\t\r\n]","",text)
                     obj['lang'] = cleaned_string
                     obj['url'] = root+a['href']
+                    obj['text'] =  re.sub(r"[\t\r\n]","",spans[1].text)
                     arr.append(obj)
+                elif x!= None and len(spans) ==2 and ss!=None:
+                    try :
+                        print('i am samir ')
+                        ss=self.numeric_converter_01(ss)
+                        ep = self.numeric_converter_01(ep)
+                        text = x.text 
+                        cleaned_string = re.sub(r"[\t\r\n]","",text)
+                        cleaned_t = re.sub(r"[\t\r\n]","",spans[1].text)
+                        obj['lang'] = cleaned_string
+                        obj['url'] = root+a['href']
+                        obj['text'] =  cleaned_t+'mr k '
+                        if f'S{ss}E{ep}' in cleaned_t:
+                            print('appended ')
+                            arr.append(obj)
+                    except Exception as err : 
+                        print(err)
         return arr
         #print(x.text)
-    
-    def search_result_filtered (self,id:str):
-            url = f"https://api.themoviedb.org/3/movie/{id}?language=en-US"
+    def numeric_converter_01(self,no:str):
+        if len(no) == 1 :
+            return '0'+no
+        else :
+            return no
+
+
+    def search_result_filtered (self,id:str,ss:str=None):
+            url = f"https://api.themoviedb.org/3/tv/{id}?language=en-US"
             res = requests.get(url,headers=headersid).json()
-            year = res['release_date'][:4]
-            title = res['title']
+            # year = res['release_date'][:4]
+            year = res['first_air_date'][:4]
+            title = 'Game of Thrones'
+            if ss!= None : 
+                word_number = inflict1.number_to_words(int(ss))
+                ordial:str = inflict1.ordinal(word_number)
+                capi_ordial = ordial.capitalize()
+
+                title = f'{title} - {capi_ordial} Season'
+                print(title)
             matchQ = f'{title} ({year})'
             searched_arr = self.search_subtitles(title)
             ratio = 0
@@ -112,10 +145,10 @@ class DwnloadLink:
 
 
 
-    def main(self,id): 
-        searched_obj= self.search_result_filtered(id)
+    def main(self,id,ss:str=None,ep:str = None): 
+        searched_obj= self.search_result_filtered(id,ss)
         sub_url = searched_obj['url']
-        available_subs_arr = self.get_page_urls(sub_url)
+        available_subs_arr = self.get_page_urls(sub_url,ss,ep)
         return available_subs_arr
         # print(e)
 
@@ -129,13 +162,16 @@ def main():
 @app.route('/sub/<id>')
 def movie_subs_list(id): 
     host = request.host
+    ss = request.args.get("ss",None)
+    ep = request.args.get("ep",None)
     dwn = DwnloadLink()
-    arr = dwn.main(id)
+    arr = dwn.main(id,ss,ep)
     for obj in arr:
         encoded_url = quote(obj['url'], safe='~()*!\'')
         obj['url'] = f'https://{host}/x/{encoded_url}.srt'
 
     return jsonify(arr)  # Return JSON response
+    
 
 @app.route('/x/<path:url>')
 def dwn_srt(url):
@@ -146,12 +182,8 @@ def dwn_srt(url):
         
 
 if __name__ == '__main__':
-    # Get the host and port from environment variables or use default values
     host = os.environ.get('HOST', '0.0.0.0')
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('DEBUG', True)
-
-    # Run the Flask app with dynamically determined host and port
     app.run(host=host, port=port, debug=debug)
-    
 

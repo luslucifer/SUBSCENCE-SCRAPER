@@ -5,3 +5,4 @@ thefuzz
 flask 
 uvicorn
 gunicorn
+inflect
