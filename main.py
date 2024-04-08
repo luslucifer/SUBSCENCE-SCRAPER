@@ -84,7 +84,6 @@ class DwnloadLink:
                     arr.append(obj)
                 elif x!= None and len(spans) ==2 and ss!=None:
                     try :
-                        print('i am samir ')
                         ss=self.numeric_converter_01(ss)
                         ep = self.numeric_converter_01(ep)
                         text = x.text 
@@ -92,7 +91,7 @@ class DwnloadLink:
                         cleaned_t = re.sub(r"[\t\r\n]","",spans[1].text)
                         obj['lang'] = cleaned_string
                         obj['url'] = root+a['href']
-                        obj['text'] =  cleaned_t+'mr k '
+                        obj['text'] =  cleaned_t
                         if f'S{ss}E{ep}' in cleaned_t:
                             print('appended ')
                             arr.append(obj)
@@ -108,11 +107,19 @@ class DwnloadLink:
 
 
     def search_result_filtered (self,id:str,ss:str=None):
-            url = f"https://api.themoviedb.org/3/tv/{id}?language=en-US"
-            res = requests.get(url,headers=headersid).json()
-            # year = res['release_date'][:4]
-            year = res['first_air_date'][:4]
-            title = 'Game of Thrones'
+            if ss!=None:
+                url = f"https://api.themoviedb.org/3/tv/{id}?language=en-US"
+                res = requests.get(url,headers=headersid).json()
+                year = res['first_air_date'][:4]
+                title = res['name']
+            else :
+                url = f"https://api.themoviedb.org/3/movie/{id}?language=en-US"
+                res = requests.get(url,headers=headersid).json()
+                year = res['release_date'][:4]
+                title = res['title']
+
+
+
             if ss!= None : 
                 word_number = inflict1.number_to_words(int(ss))
                 ordial:str = inflict1.ordinal(word_number)
@@ -182,8 +189,9 @@ def dwn_srt(url):
         
 
 if __name__ == '__main__':
-    host = os.environ.get('HOST', '0.0.0.0')
-    port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('DEBUG', True)
-    app.run(host=host, port=port, debug=debug)
-
+    # host = os.environ.get('HOST', '0.0.0.0')
+    # port = int(os.environ.get('PORT', 5000))
+    # debug = os.environ.get('DEBUG', True)
+    # app.run(host=host, port=port, debug=debug)
+    d = DwnloadLink()
+    print(d.search_result_filtered('123'))
