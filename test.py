@@ -1,12 +1,14 @@
-def verify_string(input_string):
-    if "S01E04" in input_string:
-        return True
-    else:
-        return False
+from thefuzz import fuzz
 
-# Test the function
-input_string = "Game.of.Thrones.S01E03.Lord.Snow.BR.HDR10.1080p.10Bit.DDP5.1-HEVC-d3g"
-if verify_string(input_string):
-    print("String contains 'S01E03'")
-else:
-    print("String does not contain 'S01E03'")
+string1 = 'Eye Love You (Ai Rabu Yuu / アイラブユー) - First Season'
+tmdb ='Eye Love You'
+
+similarity_ratio = fuzz.ratio(tmdb, string1)
+print(similarity_ratio)
+                # Using fuzz.partial_ratio
+partial_ratio = fuzz.partial_ratio(tmdb, string1)
+print(partial_ratio)                # Using fuzz.token_sort_ratio
+token_sort_ratio = fuzz.token_sort_ratio(tmdb, string1)
+print(token_sort_ratio)                # Using fuzz.token_set_ratio
+token_set_ratio = fuzz.token_set_ratio(tmdb, string1)
+print(token_set_ratio)

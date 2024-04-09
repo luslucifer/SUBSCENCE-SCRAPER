@@ -132,7 +132,6 @@ class DwnloadLink:
             ratio = 0
             stored_obj = {}
             for  obj in searched_arr: 
-                stored_obj = obj
                 t = obj['title']
                 similarity_ratio = fuzz.ratio(t, matchQ)
                 # Using fuzz.partial_ratio
@@ -144,6 +143,9 @@ class DwnloadLink:
                 total_ratio = similarity_ratio +partial_ratio+token_sort_ratio+token_set_ratio
                 if ratio < total_ratio :
                     ratio = total_ratio
+                    stored_obj = obj
+                
+                print(f'{t} - {similarity_ratio} - {partial_ratio} - {token_sort_ratio} - {token_set_ratio} - {total_ratio}')
 
                 if ratio ==400 :
                     print('for loop breaked!!!!!!!!!!!!!')
@@ -195,4 +197,6 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('DEBUG', True)
     app.run(host=host, port=port, debug=debug)
-    
+    # d =DwnloadLink()
+    # print(d.search_result_filtered(240581,1))
+    # print(d.search_subtitles('Eye Love You'))
